@@ -8,7 +8,8 @@
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+		<!-- <link rel="stylesheet" href="dist/theme/black.css" id="theme"> -->
+		<link rel="stylesheet" href="dist/theme/sky.css" id="theme">
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
@@ -16,8 +17,510 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-notes="Something important">
+					<h2 class="r-fit-text">Flow.js</h2>
+					<p>A STATIC TYPE CHECKER FOR JAVASCRIPT</p>
+					<aside class="notes">
+						Flow is a static code analyzer and a set of syntax constructs for directly specifying the type of a variable.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Getting Started:</h2>
+					<p>
+						Flow is a static type checker for your JavaScript code. 
+						It does a lot of work to make you more productive. Making 
+						you code faster, smarter, more confidently, and to a bigger scale.
+					</p>
+
+					<aside class="notes">
+						Flow is able to calculate the type of a variable without making any changes to the code (unlike TypeScript), which allows you to start using it now in any project. It is also possible to independently specify types in the TypeScript style, that provides more control to the developers./n
+						In this presentation, I’ll introduce you Flow and main features. We’ll look at how to set up it, how to add type annotations to your code, and how to automatically strip out those annotations when running the code.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Installation</h2>
+
+					<aside class="notes">
+						Installation
+					</aside>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						<!-- .slide: style="font-size:2rem" -->
+						<h3>Setup Compiler:</h3>
+						<ul>
+							<li>
+								<p>First install @babel/core, @babel/cli, and @babel/preset-flow</p>
+								<pre><code data-trim data-noescape>
+									npm install --save-dev @babel/core @babel/cli @babel/preset-flow
+								</code></pre>
+							</li>
+							<li>
+								<p>Next you need to create a .babelrc</p>
+								<pre><code data-trim data-noescape>
+									{
+										"presets": ["@babel/preset-flow"]
+									}
+								</code></pre>
+							</li>
+							<li>
+								<p>You can add this to your package.json</p>
+								<pre><code data-trim data-noescape>
+									{
+										"name": "my-project",
+										"main": "lib/index.js",
+										"scripts": {
+											"build": "babel src/ -d lib/",
+											"prepublish": "npm run build"
+										}
+									}
+								</code></pre>
+							</li>
+						</ul>
+
+						<aside class="notes">
+							First you’ll need to setup a compiler to strip away Flow types. You can choose Babel compiler.
+							Babel will take your Flow code and strip out any type annotations.
+							First install @babel/core, @babel/cli, and @babel/preset-flow
+	
+							Next you need to create a .babelrc 
+							file at the root of your project.
+						</aside>
+					</script>	
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						<!-- .slide: style="font-size:2rem" -->
+						<h3>Setup Flow:</h3>
+						<ul>
+							<li>
+								<p>Add a devDependency on the flow-bin npm package:</p>
+								<pre><code data-trim data-noescape>
+									npm install --save-dev flow-bin
+								</code></pre>
+							</li>
+							<li>
+								<p>Add a "flow" script to your package.json:</p>
+								<pre><code data-trim data-noescape>
+									"scripts": {
+										"flow": "flow"
+									}
+								</code></pre>
+							</li>
+							<li>
+								<p>Run Flow</p>
+								<p>The first time, run:</p>
+								<pre><code data-trim data-noescape>
+									npm run flow init
+								</code></pre>
+								<p>After running flow with init the first time, run:</p>
+								<pre><code data-trim data-noescape>
+									npm run flow
+								</code></pre>
+							</li>
+						</ul>
+
+						<aside class="notes">
+							Flow works best when installed 
+							per-project rather than globally.
+
+							Add flow-bin npm package as 
+							devDependency :
+	
+							npm run flow init
+						</aside>
+					</script>	
+				</section>
+
+				<section>
+					<h2>Usage</h2>
+					<p>How to start using Flow</p>
+				</section>
+
+				<section>
+					<ul>
+						<li>
+							<p>Initialize your project with:</p>
+							<pre><code data-trim data-noescape>
+								flow init
+							</code></pre>
+						</li>
+						<li class="fragment">
+							<p>Start the Flow background process with flow.</p>
+							<pre><code data-trim data-noescape>
+								flow status
+							</code></pre>
+						</li>
+						<li class="fragment">
+							<p>Determine which files Flow will monitor with</p>
+							<pre><code data-trim data-noescape>
+								// @flow
+							</code></pre>
+						</li>
+						<li class="fragment">Write Flow code for your project.</li>
+						<li class="fragment">
+							<p>Check your code for type errors.</p>
+							<pre><code data-trim data-noescape>
+								flow
+							</code></pre>
+						</li>
+					</ul>
+
+					<aside class="notes">
+						A configuration file named .flowconfig must be present at the root of the project folder. 
+						We can create an empty config file by running the command:
+
+						npm run flow init
+							
+						// -> Run the Flow Background Process 
+						The core benefit Flow is its ability to quickly check your code for errors. Once you have enabled your project for Flow, 
+						you can start the process that allows Flow to check your code incrementally and with great speed.
+
+						// flow status //
+							
+						This command first starts a background process that will check all Flow files for errors. 
+						The background process continues  running, monitoring changes to your code and checking those 
+						changes incrementally for errors.
+							
+						// -> Prepare Your Code for Flow 
+							
+						The Flow background process monitors all Flow files. However, how does it know which files 
+						should be checked? Placing the // @flow anotation before any code in a JavaScript 
+						file.
+
+						// @flow //
+							
+						This flag is a normal JavaScript comment annotated with @flow. The Flow background 
+						process gathers all the files with this flag and uses the type information available from all of 
+						these files to ensure consistency and error free programming.
+
+						// -> Write Flow Code 
+							
+						Now that all the setup and initialization is complete, you are ready to write actual Flow code. 
+						For each file that you have flagged with // @flow, now you have the full power of Flow 
+						and its type-checking available to you.
+
+						// -> Check Your Code
+							
+						The great thing about Flow is that you can get near real-time feedback on the state of your code. 
+						At any point that you want to check for errors, just run command:
+
+						// flow //
+							
+						The first time this is run, the Flow background process will be spawned and all of your Flow files 
+						will be checked. Then, as you continue to iterate on your project, the background process 
+						will continuously monitor your code such that when you run flow again.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Type Inference</h2>
+					<p>Type checking can be done in two ways:</p>
+
+					<aside class="notes">
+						Generally, type checking can be done in two ways:
+					</aside>
+				</section>
+
+				<section>
+					<h4>
+						Strict indication of the type of a variable 
+						(with a change directly into the code)
+					</h4>
+					<pre><code data-trim data-noescape>
+						// @flow
+						function square(n: number): number {
+							return n * n;
+						}
+
+						square("2"); // Error!
+					</code></pre>
+
+					<aside class="notes">
+						Via annotations: We specify the types we expect as part of the code, and the type checker evaluates 
+						the code based on those expectations
+
+							// With annotations, we have to write some extra code which is only useful during development and 
+						is stripped off from the final JavaScript build that will be loaded by the browser. This requires 
+						a bit of extra work upfront to make the code checkable by adding those extra type annotations.
+					</aside>
+				</section>
+
+				<section>
+					<h4>
+						Checking without using annotations (with annotated comment)
+					</h4>
+					<pre><code data-trim data-noescape>
+						// @flow
+						function square(n) {
+							return n * n; // Error!
+						}
+
+						square("2");
+					</code></pre>
+
+					<aside class="notes">
+						- Via code inference: The tool is smart enough to infer the expected types by looking at the context in 
+						which variables are used and checks the code based on that
+						
+							// In the second case, the code is already ready for being tested without any modification, 
+						hence minimizing the programmer’s effort. It doesn’t force you to change how you code as it 
+						automatically deduces the data type of the expressions. This is known as type inference and is one of the most 
+						important features of Flow.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Nullable Types</h2>
+
+					<aside class="notes">
+						Flow treats null in a different way compared to other type systems. It doesn’t ignore null, 
+						it prevents errors that may crash the application where null is passed instead of some other valid types.
+					</aside>
+				</section>
+
+				<section>
+					<div>
+						<p>Flow will throw an error:</p>
+						<pre><code data-trim data-noescape>
+							/*@flow*/
+							function stringLength (str) {
+								return str.length;
+							}
+
+							var length = stringLength(null);
+						</code></pre>
+					</div>
+					<div class="fragment">
+						<p>To fix this shown below:</p>
+						<pre><code data-trim data-noescape>
+							/*@flow*/
+							function stringLength (str) {
+								if (str !== null) {
+									return str.length;
+								}
+
+								return 0;
+							}
+
+							var length = stringLength(null);
+						</code></pre>
+					</div>
+
+					<aside class="notes">
+						Consider the following code:
+						In the above case, Flow will throw an error. To fix this, 
+						we’ll have to handle null separately as shown below:
+
+						// -> press next;
+
+						We introduce a check for null to ensure that the code works correctly in all cases. 
+						Flow will consider this last snippet as a valid code.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Type Annotations</h2>
+
+					<aside class="notes">
+						Type inference is one of the best features of Flow, as we can get useful feedback without 
+						having to write type annotations. However, in some cases, adding annotations to the code is necessary 
+						to provide better checking.
+					</aside>
+				</section>
+
+				<section>
+					<p>Consider the following:</p>
+					<pre><code data-trim data-noescape>
+						/*@flow*/
+						function foo(x, y){
+							return x + y;
+						}
+
+						foo('Hello', 42);
+					</code></pre>
+
+					<aside class="notes">
+						Flow won’t find any errors in the above code because the + (plus) operator can be used on strings 
+						and numbers, and we didn’t specify that the parameters of add() must be numbers.
+					</aside>
+				</section>
+
+				<section>
+					<p>Type annotations to the above code, it becomes as reported below:</p>
+					<pre><code data-trim data-noescape>
+						/*@flow*/
+						function foo(x : number, y : number) : number {
+							return x + y;
+						}
+
+						foo('Hello', 42);
+					</code></pre>
+					<p>The error shown on the terminal:</p>
+					<pre><code data-trim data-noescape>
+						index.js:7
+						7: foo('Hello', 42);
+									^^^^^^^ string. This type is incompatible with the expected param type of
+						3: function foo(x : number, y : number) : number{
+																^^^^^^ number
+					</code></pre>
+
+					<aside class="notes">
+						In this case, we can use type annotations to specify the desired behavior. Type annotations are prefixed 
+						with a : (colon) and can be placed on function parameters, return types, and variable declarations.
+						If we add type annotations to the above code, it becomes as reported below
+					</aside>
+				</section>
+
+				<section>
+					<h2>Functions</h2>
+					<pre><code data-trim data-noescape>
+						/*@flow*/
+						/*--------- Type annotating a function --------*/
+						function add(x : number, y : number) : number {
+							return x + y;
+						}
+
+						add(3, 4);
+					</code></pre>
+
+					<aside class="notes">
+						Code shows the annotation of a variable and a function. The arguments of the add() function, 
+						as well as the value returned, are expected to be numbers. If we pass any other data type, Flow will throw an error.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Arrays</h2>
+					<pre><code data-trim data-noescape>
+						/*-------- Type annotating an array ----------*/
+						var foo : Array<number> = [1,2,3];
+					</code></pre>
+
+					<aside class="notes">
+						Array annotations are in the form of Array<T> where T denotes the data type of individual elements of the array. 
+						In the above code, foo is an array whose elements should be numbers.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Classes</h2>
+					<pre><code data-trim data-noescape>
+						/*-------- Type annotating a Class ---------*/
+						class Bar{
+							x:string;           // x should be string       
+							y:string | number;  // y can be either a string or a number
+							constructor(x,y){
+								this.x=x;
+								this.y=y;
+							}
+						}
+
+						var bar1 : Bar = new Bar("hello",4);
+					</code></pre>
+
+					<aside class="notes">
+						An example schema of class. The only aspect to keep in mind is that we can perform an OR operation among 
+						two types using the | symbol. The variable bar1 is annotated with respect to the schema of the Bar class.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Object literals</h2>
+					<pre><code data-trim data-noescape>
+						/*--------- Type annonating an object ---------*/
+
+						var obj : {a : string, b : number, c: Array<string>, d : Bar} = {
+							a : "hello",
+							b : 42,
+							c : ["hello", "world"],
+							d : new Bar("hello",3)
+						}
+					</code></pre>
+
+					<aside class="notes">
+						We can annotate object literals in a similar way to classes, specifying the types of 
+						the object’s properties.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Library Definitions</h2>
+					<pre><code data-trim data-noescape>
+						/* @flow */
+
+						var users = [
+							{ name: 'John', designation: 'developer' },
+							{ name: 'Doe', designation: 'designer' }
+						];
+
+						function getDeveloper() {
+							return _.findWhere(users, {designation: 'developer'});
+						}
+					</code></pre>
+					<p>This code will give the following error:</p>
+					<pre><code data-trim data-noescape>
+						interfaces/app.js:9
+						9:   return _.findWhere(users, {designation: 'developer'});
+												^ identifier `_`. Could not resolve name
+					</code></pre>
+
+					<aside class="notes">
+						We often face situations where we have to use methods from third-party libraries in our code. 
+						Flow will throw an error in this case but, usually, we don’t want to see those errors as they 
+						will distract from checking our own code.
+
+							// Thankfully, we don’t need to touch the library code to prevent these errors. Instead, we can 
+						create a library definition (libdef). A libdef is just a fancy term for a JavaScript file that 
+						contains declarations of the functions or the methods provided by the third-party code.
+						Let’s see an example:
+
+							// The error is generated because Flow doesn’t know anything about the _ variable. 
+						To fix this issue we need to bring in a libdef for Underscore.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Stripping the Type Annotations</h2>
+					<p>install flow-remove-types as a project dependency:</p>
+					<pre><code data-trim data-noescape>
+							npm install --save-dev flow-remove-types
+					</code></pre>
+					<p>add another script entry to our package.json file:</p>
+					<pre><code data-trim data-noescape>
+							"scripts": {
+								"flow": "flow",
+								"build": "flow-remove-types src/ -D dest/",
+							}
+					</code></pre>
+
+					<aside class="notes">
+						As type annotations are not valid JavaScript syntax, we need to strip them from the code before executing it in the browser. 
+						This can be done using the flow-remove-types tool or as a Babel preset. We’ll only discuss the first method.
+
+						// npm install --save-dev flow-remove-types //
+							
+						we can add another script entry to our package.json file:
+
+						This command will strip all the type annotations from the files present in the src folder and store 
+						the compiled version in the dist folder. The compiled files can be loaded on the browser just like 
+						any other JavaScript file.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Conclusions</h2>
+
+					<aside class="notes">
+						We discussed the various type checking features of Flow and how they can help us catch errors and improve 
+						the quality of our code. We also saw how Flow makes it very easy to get started, 
+						and doing type inference so we can start getting useful feedback without having to add annotations throughout our code.
+					</aside>
+				</section>
 			</div>
 		</div>
 
